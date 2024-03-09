@@ -103,11 +103,11 @@ export const useBurnerManager = ({
         return burners.map((burner) => {
             return new BurnerConnector(
                 {
-                    options: {
-                        id: burner.address,
-                    },
+                    id: burner.address,
+                    name: "Dojo Burner",
                 },
-                get(burner.address)
+                get(burner.address),
+                burnerManager.provider
             );
         });
     }, [burnerManager.isDeploying]);
