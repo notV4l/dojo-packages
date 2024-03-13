@@ -5,6 +5,7 @@ import {
     ec,
     hash,
     RpcProvider,
+    shortString,
     stark,
 } from "starknet";
 import { Burner, BurnerManagerOptions, BurnerStorage } from "../types";
@@ -59,6 +60,7 @@ export class BurnerManager {
     public masterAccount: AccountInterface;
     public accountClassHash: string;
     public provider: RpcProvider;
+    public chainId: string = "";
 
     public account: Account | null = null;
     public isDeploying: boolean = false;
@@ -73,6 +75,13 @@ export class BurnerManager {
         this.masterAccount = masterAccount;
         this.accountClassHash = accountClassHash;
         this.provider = rpcProvider;
+
+        const initChainId = async () => {
+            this.chainId = shortString.decodeShortString(
+                (await this.provider.getChainId()) as string
+            );
+        };
+        initChainId();
     }
 
     public setIsDeployingCallback(
@@ -253,6 +262,7 @@ export class BurnerManager {
         }
 
         storage[address] = {
+            chainId: this.chainId,
             privateKey,
             publicKey,
             deployTx,
